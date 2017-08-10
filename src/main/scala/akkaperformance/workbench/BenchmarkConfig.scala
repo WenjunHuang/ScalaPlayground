@@ -4,6 +4,11 @@ import com.typesafe.config.ConfigFactory
 
 object BenchmarkConfig {
 
-  val config = ConfigFactory.load("benchmark")
+  val benchmarkConfig = ConfigFactory.load("benchmark")
+  val longRunningBenchmarkConfig = ConfigFactory.load("long_running_benchmark").withFallback(benchmarkConfig)
+
+  def config(longRunning: Boolean = false) = if (longRunning)
+    longRunningBenchmarkConfig
+  else benchmarkConfig
 
 }

@@ -1,5 +1,5 @@
-import com.typesafe.sbt.SbtMultiJvm.multiJvmSettings
 import com.typesafe.sbt.SbtMultiJvm.MultiJvmKeys.MultiJvm
+import com.typesafe.sbt.SbtMultiJvm.multiJvmSettings
 
 val catsVersion = "0.9.0"
 val akkaFullVersion = "2.5.3"
@@ -18,7 +18,7 @@ lazy val commonSettings = Seq(
     macroParadise, kindProjector, resetAllAttrs
   ),
   // https://mvnrepository.com/artifact/org.scalatest/scalatest_2.12
-  libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.3" % "test",
+  libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.3",
   libraryDependencies += "com.github.mpilquist" %% "simulacrum" % "0.11.0",
   libraryDependencies += "com.softwaremill.macwire" %% "macros" % "2.3.0" % "provided",
   libraryDependencies += "com.softwaremill.macwire" %% "macrosakka" % "2.3.0" % "provided",
@@ -36,11 +36,12 @@ lazy val commonSettings = Seq(
   libraryDependencies += "com.typesafe.akka" %% "akka-persistence-query" % akkaFullVersion,
   libraryDependencies += "org.iq80.leveldb" % "leveldb" % "0.7",
   libraryDependencies += "org.fusesource.leveldbjni" % "leveldbjni-all" % "1.8",
+  libraryDependencies += "org.apache.commons" % "commons-math3" % "3.6.1",
   libraryDependencies ++= Seq(
     "com.typesafe.akka" %% "akka-cluster" % akkaFullVersion,
     "com.typesafe.akka" %% "akka-cluster-sharding" % akkaFullVersion,
-    "com.typesafe.akka" %% "akka-multi-node-testkit" % akkaFullVersion % "test",
-    "com.typesafe.akka" %% "akka-testkit" % akkaFullVersion % "test"),
+    "com.typesafe.akka" %% "akka-multi-node-testkit" % akkaFullVersion,
+    "com.typesafe.akka" %% "akka-testkit" % akkaFullVersion),
   scalacOptions in Compile ++= Seq(
     "-deprecation",
     "-encoding", "UTF-8",
