@@ -1,0 +1,56 @@
+group 'ScalaPlayground-macros'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    ext {
+        scalaVersion = '2.12'
+        scalaFullVersion = '2.12.2'
+        akkaVersion = '2.5'
+        akkaFullVersion = '2.5.3'
+        akkaHttpVersion = '10.0.9'
+        scalatestFullVersion = '3.0.3'
+        junitFullVersion = '4.12'
+        scalazVersion = '7.2.12'
+        spec2Version = '3.8.9'
+        scalaMockVersion = '3.6.0'
+        mockitoVersion = '2.8.47'
+    }
+    repositories {
+        maven { url 'http://192.168.2.247:8078' }
+    }
+}
+apply plugin: 'java'
+apply plugin: 'scala'
+
+sourceCompatibility = 1.8
+
+repositories {
+    maven { url 'http://192.168.2.247:8078' }
+    ivy {
+        name "typesafe-ivy-release"
+        url "http://192.168.2.247:8078"
+        layout "ivy"
+    }
+}
+
+
+configurations {
+    scalaCompilerPlugin
+}
+configurations.scalaCompilerPlugin.transitive = false
+dependencies {
+    scalaCompilerPlugin group: "org.scalamacros", name: "paradise_2.12.2", version: "2.1.0"
+    compile group: 'org.scala-lang', name: 'scala-library', version: scalaFullVersion
+    compile group: 'org.scala-lang', name: 'scala-reflect', version: '2.12.2'
+}
+
+tasks.withType(ScalaCompile) {
+    scalaCompileOptions.additionalParameters = [
+            "-feature",
+            "-language:_",
+//            "-language:experimental.macros",
+//            "-language:implicitConversions",
+//            "-language:postfixOps",
+//            "-language:reflectiveCalls",
+            "-Xplugin:" + configurations.scalaCompilerPlugin.singleFile.path]
+}

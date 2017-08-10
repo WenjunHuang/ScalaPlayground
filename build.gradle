@@ -1,0 +1,135 @@
+group 'ScalaPlayground'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    ext {
+        scalaVersion = '2.12'
+        scalaFullVersion = '2.12.2'
+        akkaVersion = '2.5'
+        akkaFullVersion = '2.5.3'
+        akkaHttpVersion = '10.0.9'
+        scalatestFullVersion = '3.0.3'
+        junitFullVersion = '4.12'
+        scalazVersion = '7.2.12'
+        spec2Version = '3.8.9'
+        scalaMockVersion = '3.6.0'
+        mockitoVersion = '2.8.47'
+    }
+    repositories {
+//        maven { url 'http://61.145.62.114:8081/' }
+        maven { url 'http://192.168.2.247:8078' }
+    }
+}
+
+apply plugin: 'java'
+
+
+apply plugin: 'scala'
+
+sourceCompatibility = 1.8
+
+repositories {
+//    maven { url 'http://61.145.62.114:8081/' }
+//    ivy {
+//        name "typesafe-ivy-release"
+//        url "http://61.145.62.114:8081/"
+//        layout "ivy"
+//    }
+    maven { url 'http://192.168.2.247:8078' }
+    ivy {
+        name "typesafe-ivy-release"
+        url "http://192.168.2.247:8078"
+        layout "ivy"
+    }
+}
+
+configurations {
+    scalaCompilerPlugin
+}
+
+sourceSets {
+    multijvm {
+        scala {
+
+        }
+    }
+}
+
+task printss {
+    doLast {
+        for (n in sourceSets) {
+            println(n)
+            println(n.srcDirs)
+        }
+    }
+}
+configurations.scalaCompilerPlugin.transitive = false
+
+dependencies {
+    zinc 'com.typesafe.zinc:zinc:0.3.15'
+    scalaCompilerPlugin group:"org.scalamacros",name:"paradise_2.12.2",version:"2.1.0"
+    compile group:"org.scalamacros",name:"paradise_2.12.2",version:"2.1.0"
+    compile group: 'org.scala-lang', name: 'scala-library', version: scalaFullVersion
+    compile group: 'org.scala-lang', name: 'scala-reflect', version: scalaFullVersion
+    compile group: 'org.typelevel', name: 'cats_2.12', version: '0.9.0'
+    compile group: 'com.github.mpilquist', name: 'simulacrum_2.12', version: '0.11.0'
+
+    compile subprojects
+
+    // akka
+    compile group: 'com.typesafe.akka', name: "akka-actor_${scalaVersion}", version: akkaFullVersion
+    compile group: 'com.typesafe.akka', name: "akka-slf4j_${scalaVersion}", version: akkaFullVersion
+    compile group: 'com.typesafe.akka', name: "akka-http_${scalaVersion}", version: akkaHttpVersion
+    compile group: 'com.typesafe.akka', name: "akka-http-spray-json_${scalaVersion}", version: akkaHttpVersion
+
+    compile group: 'com.typesafe.akka', name: "akka-remote_${scalaVersion}", version: akkaFullVersion
+    compile group: 'com.typesafe.akka', name: "akka-cluster_${scalaVersion}", version: akkaFullVersion
+    compile group: 'com.typesafe.akka', name: "akka-cluster-metrics_${scalaVersion}", version: akkaFullVersion
+    compile group: 'com.typesafe.akka', name: "akka-cluster-tools_${scalaVersion}", version: akkaFullVersion
+
+    // oauth2
+    compile group: 'com.nulab-inc', name: "scala-oauth2-core_${scalaVersion}", version: '1.3.0'
+
+    // joda
+    compile group: 'joda-time', name: 'joda-time', version: '2.9.4'
+    compile group: 'org.joda', name: 'joda-convert', version: '1.8'
+
+    // rediscala
+    compile group: 'com.github.etaty', name: "rediscala_$scalaVersion", version: '1.8.0'
+
+    // test
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile group: 'com.typesafe.akka', name: "akka-testkit_${scalaVersion}", version: akkaFullVersion
+    testCompile group: 'com.typesafe.akka', name: "akka-multi-node-testkit_${scalaVersion}", version: akkaFullVersion
+    testCompile group: 'com.typesafe.akka', name: "akka-stream-testkit_${scalaVersion}", version: akkaFullVersion
+    testCompile group: 'org.scalatest', name: "scalatest_$scalaVersion", version: scalatestFullVersion
+    testCompile group: 'com.typesafe.akka', name: "akka-http-testkit_${scalaVersion}", version: akkaHttpVersion
+    testCompile group: 'org.scalamock', name: "scalamock-scalatest-support_$scalaVersion", version: scalaMockVersion
+    testCompile group: 'org.specs2', name: "specs2-core_$scalaVersion", version: spec2Version
+    testCompile group: 'org.specs2', name: "specs2-mock_$scalaVersion", version: spec2Version
+    testCompile group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
+    // log4j2
+    compile 'com.typesafe.scala-logging:scala-logging_2.12:3.5.0'
+    compile 'org.apache.logging.log4j:log4j-api:2.6.1'
+    compile 'org.apache.logging.log4j:log4j-core:2.6.1'
+    compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.6.1'
+
+    compileOnly group:"com.softwaremill.macwire",name:"macros_2.12",version:"2.3.0"
+    compileOnly group:"com.softwaremill.macwire",name:"macrosakka_2.12",version:"2.3.0"
+    compile group:"com.softwaremill.macwire",name:"util_2.12",version:"2.3.0"
+    compile group:"com.softwaremill.macwire",name:"proxy_2.12",version:"2.3.0"
+
+    compileOnly 'com.github.dwickern:scala-nameof_2.12:1.0.3'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+tasks.withType(ScalaCompile) {
+    scalaCompileOptions.additionalParameters = [
+            "-feature",
+            "-language:_",
+//            "-language:experimental.macros",
+//            "-language:implicitConversions",
+//            "-language:postfixOps",
+//            "-language:reflectiveCalls",
+            "-Xplugin:" + configurations.scalaCompilerPlugin.asPath]
+}
