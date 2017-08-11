@@ -1,7 +1,9 @@
-import akka.actor.{ ActorSystem, Props, ActorRef, Actor }
+import akka.actor.{Actor, ActorRef, ActorSystem, Props}
+import akkaperformance.workbench.BenchmarkConfig
+import com.typesafe.config.ConfigFactory
 
 object Skynet {
-  val props = Props(new Skynet)
+  val props = Props(new Skynet).withDispatcher(BenchmarkConfig.throughputDispatcher)
   case class Start(level: Int, num: Long)
 }
 
@@ -55,5 +57,7 @@ class Root extends Actor {
 object Root extends App {
   case class Run(num: Int)
 
-  ActorSystem("main").actorOf(Props[Root]) ! Run(3)
+  val dispatcherConfig = BenchmarkConfig.config()
+
+  ActorSystem("main",dispatcherConfig).actorOf(Props[Root].withDispatcher(BenchmarkConfig.throughputDispatcher)) ! Run(3)
 }
