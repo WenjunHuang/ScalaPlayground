@@ -18,15 +18,8 @@ object WebServer extends App {
   implicit val executionContext = system.dispatcher
 
   val requestHandler: HttpRequest => HttpResponse = {
-    case HttpRequest(GET, Uri.Path("/"), _, _, _) =>
-      HttpResponse(entity = HttpEntity(
-        ContentTypes.`text/html(UTF-8)`,
-        "<html><body>Hello world!</body></html>"
-      ))
     case HttpRequest(GET, Uri.Path("/ping"), _, _, _) =>
       HttpResponse(entity = "PONG!")
-    case HttpRequest(GET, Uri.Path("/crash"), _, _, _) =>
-      sys.error("BOOM!")
     case r: HttpRequest =>
       r.discardEntityBytes()
       HttpResponse(404, entity = "Unknown resource!")
@@ -137,8 +130,8 @@ object WebServer extends App {
     }
   }
 
-  //  val bindingFuture = Http().bindAndHandleSync(requestHandler, "0.0.0.0", 8080)
-  val bindingFuture = Http().bindAndHandle(routeColor, "0.0.0.0", 8080)
+    val bindingFuture = Http().bindAndHandleSync(requestHandler, "0.0.0.0", 8080)
+//  val bindingFuture = Http().bindAndHandle(route, "0.0.0.0", 8080)
   StdIn.readLine()
 
   bindingFuture.flatMap(_.unbind())

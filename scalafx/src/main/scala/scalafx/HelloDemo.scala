@@ -3,13 +3,13 @@ package scalafx
 import scalafx.application.JFXApp
 import scalafx.scene.Scene
 import scalafx.Includes._
-import scalafx.scene.control.Label
+import scalafx.scene.control.{Button, Label}
 import scalafx.scene.layout.HBox
 import scalafx.scene.paint.Color._
 import scalafx.scene.shape.Rectangle
 
 object HelloDemo extends JFXApp {
-  stage = new JFXApp.PrimaryStage{
+  stage = new JFXApp.PrimaryStage {
     title.value = "Hello Stage"
     width = 600
     height = 450
@@ -18,7 +18,7 @@ object HelloDemo extends JFXApp {
       y = 40
       width = 100
       height = 100
-      fill <== when(hover) choose(Green) otherwise(Red)
+      fill <== when(hover) choose (Green) otherwise (Red)
     }
 
     val text = new Label {
@@ -32,8 +32,11 @@ object HelloDemo extends JFXApp {
       fill = LightGreen
       content = new HBox {
         children = Seq(
-        rect ,
-        text)
+          new Button("Click Me") {
+            style = "{-fx-border-width:0}"
+          },
+          rect,
+          text)
       }
     }
   }

@@ -11,4 +11,11 @@ class Log4j2WombatTestSpec extends WordSpec with Matchers{
     }
   }
 
+  "logger" should {
+    "log" in {
+      val x = LogManager.getRootLogger
+      x.info("Hello World")
+    }
+  }
+
 }

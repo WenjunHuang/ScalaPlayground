@@ -1,21 +1,20 @@
 package macros
 
 import scala.annotation.StaticAnnotation
-import scala.reflect.macros.blackbox
 import scala.language.experimental.macros
+import scala.reflect.macros.whitebox
 
 class Benchmark extends StaticAnnotation {
   def macroTransform(annottees: Any*) = macro Benchmark.impl
-
 }
 
 object Benchmark {
-  def impl(c: blackbox.Context)(annottees: c.Expr[Any]*): c.Expr[Any] = {
+  def impl(c: whitebox.Context)(annottees: c.Expr[Any]*): c.Expr[Any] = {
     import c.universe._
 
     val result = {
       annottees.map(_.tree).toList match {
-        case q"$mods def $methodName[..$tpes](...$args): $returnType = {..$body}"::Nil => {
+        case q"$mods def $methodName[..$tpes](...$args): $returnType = {..$body}" :: Nil => {
           q"""
              $mods def $methodName[..$tpes](...$args): $returnType = {
               val start = System.nanoTime()
@@ -26,7 +25,7 @@ object Benchmark {
               }
            """
         }
-        case _ => c.abort(c.enclosingPosition,"Annotation @Benchmark can be used only with methods")
+        case _ => c.abort(c.enclosingPosition, "Annotation @Benchmark can be used only with methods")
       }
     }
     c.Expr[Any](result)

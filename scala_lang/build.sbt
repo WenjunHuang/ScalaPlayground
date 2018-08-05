@@ -1,4 +1,4 @@
-name := "functional"
+name := "scala_lang"
 
 version := "1.0"
 

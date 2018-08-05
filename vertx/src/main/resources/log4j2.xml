@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Configuration status="OFF" monitorInterval="1800">
+    <Appenders>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <!--<ThresholdFilter level="TRACE" onMatch="ACCEPT"/>-->
+            <PatternLayout
+                    pattern="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <logger name="wiki" level="DEBUG"/>
+        <logger name="io.netty" level="WARN"/>
+        <logger name="io.vertx" level="INFO"/>
+        <Root level="INFO">
+            <AppenderRef ref="STDOUT"/>
+        </Root>
+    </Loggers>
+</Configuration>

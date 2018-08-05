@@ -1,17 +1,21 @@
 package lwjgl
 
+import lwjgl.Second.getClass
+import org.apache.commons.io.IOUtils
 import org.lwjgl.Version
-import org.lwjgl.opengl.WGL._
-import org.lwjgl.glfw._
 import org.lwjgl.glfw.GLFW._
-import org.lwjgl.opengl.GL
+import org.lwjgl.glfw._
+import org.lwjgl.opengl.{GL, GL15, GL20}
 import org.lwjgl.opengl.GL11._
+import org.lwjgl.opengl.GL20._
+import org.lwjgl.opengl.GL30._
 import org.lwjgl.system.MemoryStack._
-import org.lwjgl.system.MemoryUtil._
 import resource._
 
 object Simple {
-  var window:Long = _
+  var window: Long = _
+  var renderingProgram: Int = -1
+  var vao = Array[Int](0)
 
   def init(): Unit = {
     GLFWErrorCallback.createPrint(System.err).set()
@@ -51,18 +55,65 @@ object Simple {
     }
   }
 
-  def initGL(): Unit ={
-    glShadeModel(GL_SMOOTH)
-    glClearColor(0.0f,0.0f,0.0f,0.5f)
-    glClearDepth(1.0f)
-    glEnable(GL_DEPTH_TEST)
-    glDepthFunc(GL_LEQUAL)
-    glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_NICEST)
+  def initGL(): Unit = {
+    //    glShadeModel(GL_SMOOTH)
+    val vertices: Array[Float] = Array(
+      -0.5f, -0.5f, 0.0f,
+      0.5f, -0.5f, 0.0f,
+      0.0f, 0.5f, 0.0f
+    )
+    val vbo = GL15.glGenBuffers()
+    GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo)
+    GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertices, GL15.GL_STATIC_DRAW)
+
+    val vertexShader = GL20.glCreateShader(GL20.GL_VERTEX_SHADER)
+
+    val s = IOUtils.toString(getClass.getClassLoader.getResourceAsStream("vertex.glsl"),
+                             "UTF-8")
+    GL20.glShaderSource(vertexShader, s)
+    GL20.glCompileShader(vertexShader)
+  }
+
+  def createShaderProgram(): Int = {
+    val vshaderSource =
+      """
+        |#version 430
+        |void main(void) {
+        |gl_Position = vec4(0.0,0.0,0.0,1.0);
+        |}
+      """.stripMargin
+
+    val fshaderSource =
+      """
+        |#version 430
+        |out vec4 color;
+        |void main(void) {
+        |color = vec4(0.0,0.0,1.0,1.0);
+        |}
+      """.stripMargin
+
+    val vShader = glCreateShader(GL_VERTEX_SHADER)
+    glShaderSource(vShader, vshaderSource)
+    glCompileShader(vShader)
+
+    val fShader = glCreateShader(GL_FRAGMENT_SHADER)
+    glShaderSource(fShader, fshaderSource)
+    glCompileShader(fShader)
+
+    val vfprogram = glCreateProgram()
+    glAttachShader(vfprogram, vShader)
+    glAttachShader(vfprogram, fShader)
+    glLinkProgram(vfprogram)
+
+    glDeleteShader(vShader)
+    glDeleteShader(fShader)
+    vfprogram
   }
 
   def draw(): Unit = {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    glLoadIdentity()
+    glPointSize(30.0f)
+    glUseProgram(renderingProgram)
+    glDrawArrays(GL_POINTS, 0, 1)
   }
 
   def loop(): Unit = {
@@ -70,28 +121,20 @@ object Simple {
     initGL()
 
     while (!glfwWindowShouldClose(window)) {
+      draw()
       glfwSwapBuffers(window)
       glfwPollEvents()
     }
   }
 
-  def resizeGLScene(width:Int, height:Int) ={
-    glViewport(0,0,width,height)
-    glMatrixMode(GL_PROJECTION)
-    glLoadIdentity()
-  }
-
-  def run():Unit = {
+  def run(): Unit = {
     println(s"Hello LWJGL ${Version.getVersion} ! ")
     init()
     loop()
 
-//    glfwFreeCallbacks(window)
     glfwDestroyWindow(window)
-
     glfwTerminate()
     glfwSetErrorCallback(null).free()
-
   }
 
   def main(args: Array[String]): Unit = {

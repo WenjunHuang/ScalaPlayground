@@ -11,6 +11,7 @@ val lwjglNatives = sys.props.get("os.name") match {
 }
 
 libraryDependencies ++= Seq(
+  "commons-io"%"commons-io" %"2.5",
   "org.lwjgl" % "lwjgl" % lwjglVersion,
   "org.lwjgl" % "lwjgl-glfw" % lwjglVersion,
   "org.lwjgl" % "lwjgl-opengl" % lwjglVersion,

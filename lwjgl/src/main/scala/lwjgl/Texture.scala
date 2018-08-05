@@ -1,0 +1,5 @@
+package lwjgl
+
+class Texture {
+
+}

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Binding TODO MVC</title>
+    <link rel="stylesheet" href="./src/main/assets/todomvc.css"/>
+</head>
+<body>
+<div id="application-container"></div>
+</body>
+<script type="text/javascript" src="./target/scala-2.12/scalajs-jsdeps.js"></script>
+<script type="text/javascript" src="./target/scala-2.12/scalajs-fastopt.js"></script>
+<script type="text/javascript">
+    BindingTodo.main(document.getElementById("application-container"))
+</script>
+</html>

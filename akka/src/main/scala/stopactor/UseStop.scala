@@ -21,4 +21,3 @@ class LongActor extends Actor {
       Thread.sleep(1000) // simulate a long task
   }
 }
-response

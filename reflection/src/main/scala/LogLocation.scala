@@ -1,0 +1,2 @@
+object LogLocation extends App {
+}
